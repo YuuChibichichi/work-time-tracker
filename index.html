@@ -1,0 +1,22 @@
+<link rel="manifest" href="manifest.json">
+<script>
+  // Service Workerの登録
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+
+  // GASへの送信（fetchを使う）
+  async function stopTask() {
+    const gasUrl = "あなたのGASのデプロイURL"; // ここに貼り付け
+    const response = await fetch(gasUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        taskName: document.getElementById('taskName').value,
+        startTime: startTime,
+        endTime: new Date().toISOString()
+      })
+    });
+    const data = await response.json();
+    updateUI(data);
+  }
+</script>
