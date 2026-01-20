@@ -10,17 +10,15 @@
     :root {
       --bg-color: #000000;
       --text-main: #ffffff;
-      --text-sub: #666666;
+      --text-sub: #444444;
       --accent-red: #ff0033;
       --grid-color: #1a1a1a;
-      --progress-dot-active: #ffffff; /* プログレスバーの点灯色 */
-      --progress-dot-inactive: #333333; /* プログレスバーの消灯色 */
+      --dot-size: 6px;
     }
 
     body {
       background-color: var(--bg-color);
-      background-image: 
-        radial-gradient(var(--grid-color) 1px, transparent 1px);
+      background-image: radial-gradient(var(--grid-color) 1px, transparent 1px);
       background-size: 20px 20px;
       color: var(--text-main);
       font-family: 'DotGothic16', sans-serif;
@@ -29,14 +27,21 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
     .container {
-      width: 85%;
+      width: 90%;
       max-width: 400px;
-      margin-top: 80px;
-      z-index: 1;
+      margin-top: 60px;
+    }
+
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 4px;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-bottom: 20px;
     }
 
     .status-dot {
@@ -45,125 +50,114 @@
       background-color: var(--accent-red);
       border-radius: 50%;
       display: inline-block;
-      margin-right: 10px;
+      margin-right: 8px;
       opacity: 0;
     }
     .recording .status-dot {
       animation: blink 1s infinite;
     }
-    @keyframes blink {
-      0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; }
-    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     #timerDisplay {
       font-size: 4.5rem;
-      font-weight: normal;
-      margin: 40px 0 20px; /* プログレスバー用にマージン調整 */
-      letter-spacing: -2px;
       text-align: center;
+      margin: 20px 0 10px 0;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* プログレスバーのスタイル */
-    #progressBar {
-      display: flex;
-      justify-content: center;
+    /* 2列ドットプログレスバー */
+    .progress-container {
+      display: grid;
+      grid-template-columns: repeat(20, 1fr); /* 横に20個 */
+      grid-template-rows: repeat(2, 1fr);    /* 縦に2列 */
+      gap: 6px;
+      width: 100%;
       margin-bottom: 40px;
-      height: 10px; /* ドットの高さに合わせる */
     }
+
     .progress-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--progress-dot-inactive);
+      width: var(--dot-size);
+      height: var(--dot-size);
+      background-color: #222;
       border-radius: 50%;
-      margin: 0 2px;
-      transition: background-color 0.1s linear; /* ドットの色変化を滑らかに */
+      transition: background-color 0.2s ease;
     }
+
     .progress-dot.active {
-      background-color: var(--progress-dot-active);
+      background-color: var(--text-main);
+      box-shadow: 0 0 8px var(--text-main);
     }
 
     input[type="text"] {
       width: 100%;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--text-sub);
       color: var(--text-main);
       padding: 18px;
       font-family: inherit;
-      font-size: 1.1rem;
+      font-size: 1rem;
       box-sizing: border-box;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       outline: none;
-      transition: border-color 0.3s;
-    }
-    input[type="text"]:focus {
-      border-color: var(--text-main);
+      text-align: center;
     }
 
     .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 15px;
     }
 
     button {
       background: none;
       border: 1px solid var(--text-main);
       color: var(--text-main);
-      padding: 20px;
+      padding: 18px;
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
-    #stopBtn {
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
-
-    button:disabled {
-      border-color: var(--text-sub);
-      color: var(--text-sub);
-      opacity: 0.3;
-    }
+    #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
+    button:disabled { opacity: 0.2; cursor: default; }
 
     .history-section {
-      margin-top: 60px;
+      margin-top: 50px;
       border-top: 1px solid var(--grid-color);
-      padding-top: 30px;
-    }
-
-    .history-label {
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      margin-bottom: 20px;
-      letter-spacing: 2px;
+      padding-top: 20px;
     }
 
     .history-item {
       display: flex;
       justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--grid-color);
-      font-size: 0.9rem;
+      padding: 10px 0;
+      border-bottom: 1px solid #111;
+      font-size: 0.85rem;
+      color: #888;
     }
 
     .total-area {
-      margin-top: 20px;
+      margin-top: 15px;
       text-align: right;
       color: var(--accent-red);
+      font-size: 1.1rem;
     }
   </style>
 </head>
 <body id="mainBody">
 
   <div class="container">
-    <div style="text-align: left; letter-spacing: 4px; font-size: 0.9rem;">
-      <span class="status-dot"></span>LAPSE v1.0
+    <div class="header-info">
+      <span><span class="status-dot"></span>LIVE LOGGING</span>
+      <span>LAPSE v1.1</span>
     </div>
     
     <div id="timerDisplay">00:00:00</div>
-    <div id="progressBar"></div> <input type="text" id="taskName" placeholder="INPUT TASK...">
+    
+    <div id="progressBar" class="progress-container"></div>
+
+    <input type="text" id="taskName" placeholder="WHAT'S HAPPENING?">
     
     <div class="btn-group">
       <button id="startBtn" onclick="startTask()">START</button>
@@ -171,7 +165,6 @@
     </div>
 
     <div class="history-section">
-      <div class="history-label">RECENT LOGS</div>
       <div id="historyList"></div>
       <div id="totalTime" class="total-area"></div>
     </div>
@@ -181,44 +174,33 @@
     const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec";
     let startTime;
     let timerInterval;
-    const TOTAL_PROGRESS_DOTS = 15; // プログレスバーのドットの総数
-    const MAX_TRACKING_SECONDS = 60 * 5; // 5分間をプログレスバーで表現 (例)
+    const DOTS_COUNT = 40; // 20列 × 2行 = 40個
+    const DURATION_TO_FILL = 60 * 30; // 30分で満タンになる設定（必要に応じて変更してください）
 
-    // プログレスバーを初期化
     function initProgressBar() {
-      const progressBar = document.getElementById('progressBar');
-      progressBar.innerHTML = '';
-      for (let i = 0; i < TOTAL_PROGRESS_DOTS; i++) {
+      const container = document.getElementById('progressBar');
+      container.innerHTML = '';
+      for (let i = 0; i < DOTS_COUNT; i++) {
         const dot = document.createElement('div');
         dot.classList.add('progress-dot');
-        progressBar.appendChild(dot);
+        container.appendChild(dot);
       }
     }
 
-    // プログレスバーを更新
     function updateProgressBar() {
-      const diff = new Date() - startTime;
-      const secondsPassed = Math.floor(diff / 1000);
+      const elapsed = (new Date() - startTime) / 1000;
+      const progress = Math.min(elapsed / DURATION_TO_FILL, 1);
+      const activeCount = Math.floor(progress * DOTS_COUNT);
       
-      // プログレスバーの進捗計算
-      const progressRatio = Math.min(secondsPassed / MAX_TRACKING_SECONDS, 1);
-      const activeDots = Math.floor(TOTAL_PROGRESS_DOTS * progressRatio);
-
-      const dots = document.querySelectorAll('#progressBar .progress-dot');
-      dots.forEach((dot, index) => {
-        if (index < activeDots) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
+      const dots = document.querySelectorAll('.progress-dot');
+      dots.forEach((dot, i) => {
+        if (i < activeCount) dot.classList.add('active');
+        else dot.classList.remove('active');
       });
     }
 
-
     function haptic() {
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(20);
-      }
+      if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(15);
     }
 
     function startTask() {
@@ -228,19 +210,15 @@
       document.getElementById('startBtn').disabled = true;
       document.getElementById('stopBtn').disabled = false;
       
-      initProgressBar(); // スタート時にプログレスバーを初期化
+      initProgressBar();
       timerInterval = setInterval(() => {
-        updateTimer();
-        updateProgressBar(); // 1秒ごとにプログレスバーも更新
+        const diff = new Date() - startTime;
+        const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+        const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+        const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${h}:${m}:${s}`;
+        updateProgressBar();
       }, 1000);
-    }
-
-    function updateTimer() {
-      const diff = new Date() - startTime;
-      const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
-      const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-      const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-      document.getElementById('timerDisplay').innerText = `${h}:${m}:${s}`;
     }
 
     async function stopTask() {
@@ -261,10 +239,9 @@
         document.getElementById('timerDisplay').innerText = "00:00:00";
         document.getElementById('taskName').value = "";
         document.getElementById('startBtn').disabled = false;
-        initProgressBar(); // 停止時にもプログレスバーをリセット
         setTimeout(loadHistory, 1000);
       } catch (e) {
-        alert("SAVE ERROR");
+        alert("SYNC ERROR");
       }
     }
 
@@ -275,15 +252,15 @@
           const list = document.getElementById('historyList');
           list.innerHTML = data.history.slice(0, 5).map(item => `
             <div class="history-item">
-              <span>${item.title}</span>
-              <span>${item.duration}m</span>
+              <span>${item.title.toUpperCase()}</span>
+              <span>${item.duration} MIN</span>
             </div>
           `).join('');
           document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
         });
     }
 
-    initProgressBar(); // 初回ロード時にもプログレスバーを初期化
+    initProgressBar();
     loadHistory();
   </script>
 </body>
