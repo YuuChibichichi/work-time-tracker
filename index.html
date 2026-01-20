@@ -178,7 +178,7 @@
   </div>
 
   <script>
-    const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec";
+    const gasUrl = "★ここにあなたのGASのURLを貼る★";
     let startTime;
     let timerInterval;
     const TOTAL_PROGRESS_DOTS = 15; // プログレスバーのドットの総数
@@ -237,4 +237,54 @@
 
     function updateTimer() {
       const diff = new Date() - startTime;
-      const h = Math.floor(
+      const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+      const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+      const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').innerText = `${h}:${m}:${s}`;
+    }
+
+    async function stopTask() {
+      haptic();
+      clearInterval(timerInterval);
+      const taskName = document.getElementById('taskName').value || "Untitled";
+      const payload = {
+        taskName: taskName,
+        startTime: startTime.toISOString(),
+        endTime: new Date().toISOString()
+      };
+
+      document.getElementById('mainBody').classList.remove('recording');
+      document.getElementById('stopBtn').disabled = true;
+
+      try {
+        await fetch(gasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        document.getElementById('timerDisplay').innerText = "00:00:00";
+        document.getElementById('taskName').value = "";
+        document.getElementById('startBtn').disabled = false;
+        initProgressBar(); // 停止時にもプログレスバーをリセット
+        setTimeout(loadHistory, 1000);
+      } catch (e) {
+        alert("SAVE ERROR");
+      }
+    }
+
+    function loadHistory() {
+      fetch(gasUrl)
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById('historyList');
+          list.innerHTML = data.history.slice(0, 5).map(item => `
+            <div class="history-item">
+              <span>${item.title}</span>
+              <span>${item.duration}m</span>
+            </div>
+          `).join('');
+          document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
+        });
+    }
+
+    initProgressBar(); // 初回ロード時にもプログレスバーを初期化
+    loadHistory();
+  </script>
+</body>
+</html>
