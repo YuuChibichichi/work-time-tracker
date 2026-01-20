@@ -13,11 +13,12 @@
       --text-sub: #666666;
       --accent-red: #ff0033;
       --grid-color: #1a1a1a;
+      --progress-dot-active: #ffffff; /* プログレスバーの点灯色 */
+      --progress-dot-inactive: #333333; /* プログレスバーの消灯色 */
     }
 
     body {
       background-color: var(--bg-color);
-      /* Nothing風のグリッド背景 */
       background-image: 
         radial-gradient(var(--grid-color) 1px, transparent 1px);
       background-size: 20px 20px;
@@ -38,7 +39,6 @@
       z-index: 1;
     }
 
-    /* 計測中のドット点滅 */
     .status-dot {
       width: 8px;
       height: 8px;
@@ -58,9 +58,28 @@
     #timerDisplay {
       font-size: 4.5rem;
       font-weight: normal;
-      margin: 40px 0;
+      margin: 40px 0 20px; /* プログレスバー用にマージン調整 */
       letter-spacing: -2px;
       text-align: center;
+    }
+
+    /* プログレスバーのスタイル */
+    #progressBar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      height: 10px; /* ドットの高さに合わせる */
+    }
+    .progress-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--progress-dot-inactive);
+      border-radius: 50%;
+      margin: 0 2px;
+      transition: background-color 0.1s linear; /* ドットの色変化を滑らかに */
+    }
+    .progress-dot.active {
+      background-color: var(--progress-dot-active);
     }
 
     input[type="text"] {
@@ -144,8 +163,7 @@
     </div>
     
     <div id="timerDisplay">00:00:00</div>
-
-    <input type="text" id="taskName" placeholder="INPUT TASK...">
+    <div id="progressBar"></div> <input type="text" id="taskName" placeholder="INPUT TASK...">
     
     <div class="btn-group">
       <button id="startBtn" onclick="startTask()">START</button>
@@ -163,6 +181,39 @@
     const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec";
     let startTime;
     let timerInterval;
+    const TOTAL_PROGRESS_DOTS = 15; // プログレスバーのドットの総数
+    const MAX_TRACKING_SECONDS = 60 * 5; // 5分間をプログレスバーで表現 (例)
+
+    // プログレスバーを初期化
+    function initProgressBar() {
+      const progressBar = document.getElementById('progressBar');
+      progressBar.innerHTML = '';
+      for (let i = 0; i < TOTAL_PROGRESS_DOTS; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('progress-dot');
+        progressBar.appendChild(dot);
+      }
+    }
+
+    // プログレスバーを更新
+    function updateProgressBar() {
+      const diff = new Date() - startTime;
+      const secondsPassed = Math.floor(diff / 1000);
+      
+      // プログレスバーの進捗計算
+      const progressRatio = Math.min(secondsPassed / MAX_TRACKING_SECONDS, 1);
+      const activeDots = Math.floor(TOTAL_PROGRESS_DOTS * progressRatio);
+
+      const dots = document.querySelectorAll('#progressBar .progress-dot');
+      dots.forEach((dot, index) => {
+        if (index < activeDots) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
 
     function haptic() {
       if (window.navigator && window.navigator.vibrate) {
@@ -176,57 +227,14 @@
       document.getElementById('mainBody').classList.add('recording');
       document.getElementById('startBtn').disabled = true;
       document.getElementById('stopBtn').disabled = false;
-      timerInterval = setInterval(updateTimer, 1000);
+      
+      initProgressBar(); // スタート時にプログレスバーを初期化
+      timerInterval = setInterval(() => {
+        updateTimer();
+        updateProgressBar(); // 1秒ごとにプログレスバーも更新
+      }, 1000);
     }
 
     function updateTimer() {
       const diff = new Date() - startTime;
-      const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
-      const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-      const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-      document.getElementById('timerDisplay').innerText = `${h}:${m}:${s}`;
-    }
-
-    async function stopTask() {
-      haptic();
-      clearInterval(timerInterval);
-      const taskName = document.getElementById('taskName').value || "Untitled";
-      const payload = {
-        taskName: taskName,
-        startTime: startTime.toISOString(),
-        endTime: new Date().toISOString()
-      };
-
-      document.getElementById('mainBody').classList.remove('recording');
-      document.getElementById('stopBtn').disabled = true;
-
-      try {
-        await fetch(gasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        document.getElementById('timerDisplay').innerText = "00:00:00";
-        document.getElementById('taskName').value = "";
-        document.getElementById('startBtn').disabled = false;
-        setTimeout(loadHistory, 1000);
-      } catch (e) {
-        alert("SAVE ERROR");
-      }
-    }
-
-    function loadHistory() {
-      fetch(gasUrl)
-        .then(res => res.json())
-        .then(data => {
-          const list = document.getElementById('historyList');
-          list.innerHTML = data.history.slice(0, 5).map(item => `
-            <div class="history-item">
-              <span>${item.title}</span>
-              <span>${item.duration}m</span>
-            </div>
-          `).join('');
-          document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
-        });
-    }
-
-    loadHistory();
-  </script>
-</body>
-</html>
+      const h = Math.floor(
