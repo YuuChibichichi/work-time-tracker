@@ -1,22 +1,120 @@
-<link rel="manifest" href="manifest.json">
-<script>
-  // Service Workerの登録
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <title>Time Tracker PWA</title>
+    <style>
+        :root { --primary: #1a73e8; --success: #34a853; --danger: #ea4335; --bg: #f8f9fa; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; background: white; border-radius: 24px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); box-sizing: border-box; }
+        h2 { font-size: 20px; margin: 0 0 15px 0; color: #3c4043; text-align: center; }
+        .total-time { font-size: 24px; font-weight: bold; color: var(--primary); text-align: center; margin-bottom: 20px; }
+        .task-chips { display: flex; gap: 10px; margin-bottom: 15px; }
+        .chip { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 12px; text-align: center; font-weight: bold; color: #5f6368; cursor: pointer; font-size: 14px; }
+        .chip.active { border-color: var(--primary); background: #e8f0fe; color: var(--primary); }
+        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; outline: none; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { padding: 20px; border: none; border-radius: 16px; font-size: 18px; font-weight: bold; color: white; transition: 0.2s; }
+        #startBtn { background-color: var(--success); }
+        #stopBtn { background-color: var(--danger); }
+        button:disabled { background-color: #dadce0; opacity: 0.7; }
+        .history-card { margin-top: 25px; background: #fafafa; border-radius: 16px; padding: 15px; }
+        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="totalDisplay" class="total-time">0時間0分</div>
+        <div class="task-chips">
+            <div class="chip" onclick="selectTask('作業', this)">作業</div>
+            <div class="chip" onclick="selectTask('リサーチ', this)">リサーチ</div>
+            <div class="chip" onclick="selectTask('', this)">自由入力</div>
+        </div>
+        <input type="text" id="taskName" placeholder="タスク名を入力...">
+        <div class="controls">
+            <button id="startBtn" onclick="startTask()">開始</button>
+            <button id="stopBtn" onclick="stopTask()" disabled>終了</button>
+        </div>
+        <div class="history-card">
+            <div style="font-weight:bold; font-size:12px; color:#70757a; margin-bottom:10px;">最近の履歴</div>
+            <div id="historyList"></div>
+        </div>
+    </div>
 
-  // GASへの送信（fetchを使う）
-  async function stopTask() {
-    const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec"; // ここに貼り付け
-    const response = await fetch(gasUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        taskName: document.getElementById('taskName').value,
-        startTime: startTime,
-        endTime: new Date().toISOString()
-      })
-    });
-    const data = await response.json();
-    updateUI(data);
-  }
-</script>
+    <script>
+        // --- 設定 ---
+        const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec"; 
+        // -----------
+
+        let startTime = null;
+
+        // Service Worker登録
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+
+        function selectTask(name, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('taskName').value = name;
+        }
+
+        function updateUI(data) {
+            if (!data) return;
+            document.getElementById('totalDisplay').innerText = data.totalTime || "0時間0分";
+            if (data.history) {
+                document.getElementById('historyList').innerHTML = data.history.map(item => `
+                    <div class="history-item">
+                        <span>${item.date} <b>${item.title}</b></span>
+                        <span>${item.duration}分</span>
+                    </div>`).join('');
+            }
+        }
+
+        function startTask() {
+            const name = document.getElementById('taskName').value;
+            if (!name) return alert("タスク名を入力してください");
+            startTime = new Date().toISOString();
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+        }
+
+        async function stopTask() {
+            document.getElementById('stopBtn').disabled = true;
+            const payload = {
+                taskName: document.getElementById('taskName').value,
+                startTime: startTime,
+                endTime: new Date().toISOString()
+            };
+
+            try {
+                // GASへデータを送信
+                const response = await fetch(gasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors', // セキュリティ制限回避のため
+                    body: JSON.stringify(payload)
+                });
+                alert("記録を送信しました！(反映には数秒かかります)");
+                // 履歴取得用のGETリクエスト
+                const res = await fetch(gasUrl + "?type=history");
+                const data = await res.json();
+                updateUI(data);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                document.getElementById('startBtn').disabled = false;
+            }
+        }
+
+        // 初回読み込み
+        fetch(gasUrl + "?type=history")
+            .then(res => res.json())
+            .then(data => updateUI(data))
+            .catch(e => console.log("初期データ取得待ち..."));
+    </script>
+</body>
+</html>
