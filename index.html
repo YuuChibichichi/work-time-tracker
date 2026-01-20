@@ -10,10 +10,13 @@
     :root {
       --bg-color: #000000;
       --text-main: #ffffff;
-      --text-sub: #444444;
+      --text-sub: #333333;
       --accent-red: #ff0033;
       --grid-color: #1a1a1a;
-      --dot-size: 3px;
+      --dot-size: 2px;
+      /* サイクルカラー定義 */
+      --c1: #ffffff; --c2: #ff0033; --c3: #ffcc00;
+      --c4: #00ff66; --c5: #0066ff; --c6: #cc00ff;
     }
 
     body {
@@ -23,139 +26,42 @@
       color: var(--text-main);
       font-family: 'DotGothic16', sans-serif;
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; min-height: 100vh;
     }
 
-    .container {
-      width: 90%;
-      max-width: 400px;
-      margin-top: 60px;
-    }
-
-    .header-info {
-      display: flex;
-      justify-content: space-between;
-      letter-spacing: 2px;
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      margin-bottom: 25px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      background-color: var(--accent-red);
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
-      opacity: 0;
-    }
+    .container { width: 90%; max-width: 400px; margin-top: 60px; }
+    .header-info { display: flex; justify-content: space-between; letter-spacing: 2px; font-size: 0.75rem; color: var(--text-sub); margin-bottom: 25px; }
+    .status-dot { width: 6px; height: 6px; background-color: var(--accent-red); border-radius: 50%; display: inline-block; margin-right: 8px; opacity: 0; }
     .recording .status-dot { animation: blink 1s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     input[type="text"] {
-      width: 100%;
-      background: none;
-      border: none;
-      border-bottom: 1px solid var(--text-sub);
-      color: var(--text-main);
-      padding: 10px 0;
-      font-family: inherit;
-      font-size: 1.1rem;
-      box-sizing: border-box;
-      outline: none;
-      text-align: center;
-      margin-bottom: 10px;
+      width: 100%; background: none; border: none; border-bottom: 1px solid var(--text-sub);
+      color: var(--text-main); padding: 10px 0; font-family: inherit; font-size: 1.1rem;
+      box-sizing: border-box; outline: none; text-align: center; margin-bottom: 10px;
     }
 
-    #timerDisplay {
-      font-size: 4.8rem;
-      text-align: center;
-      margin: 10px 0;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -2px;
-    }
+    #timerDisplay { font-size: 4.8rem; text-align: center; margin: 10px 0; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
 
-    /* 2列・高密度プログレスバー */
-    .progress-outer {
-      padding: 0 45px; /* タイマーより少し内側に寄せる */
-      width: 100%;
-      box-sizing: border-box;
-      margin-bottom: 45px;
-    }
-    .progress-container {
-      display: grid;
-      grid-template-columns: repeat(60, 1fr); /* 密度2倍 */
-      grid-template-rows: repeat(3, 1fr);
-      gap: 3px;
-    }
-    .progress-dot {
-      width: var(--dot-size);
-      height: var(--dot-size);
-      background-color: #222;
-      border-radius: 50%;
-    }
-    .progress-dot.active {
-      background-color: var(--text-main);
-      box-shadow: 0 0 4px var(--text-main);
-    }
+    /* 高密度3列プログレスバー */
+    .progress-outer { padding: 0 50px; width: 100%; box-sizing: border-box; margin-bottom: 45px; }
+    .progress-container { display: grid; grid-template-columns: repeat(60, 1fr); grid-template-rows: repeat(3, 1fr); gap: 2px; }
+    .progress-dot { width: var(--dot-size); height: var(--dot-size); background-color: #111; border-radius: 50%; transition: background-color 0.3s; }
 
-    .btn-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    button {
-      background: none;
-      border: 1px solid var(--text-main);
-      color: var(--text-main);
-      padding: 18px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      cursor: pointer;
-      letter-spacing: 2px;
-    }
+    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    button { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 18px; font-family: inherit; font-size: 0.9rem; cursor: pointer; letter-spacing: 2px; }
     #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
     button:disabled { opacity: 0.2; }
 
-    .history-section {
-      margin-top: 50px;
-      border-top: 1px solid var(--grid-color);
-      padding-top: 20px;
-    }
-    .history-item {
-      padding: 15px 0;
-      border-bottom: 1px solid #111;
-    }
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      color: #888;
-      margin-bottom: 6px;
-    }
-    /* 履歴用ミニドットバー */
-    .mini-bar {
-      display: flex;
-      gap: 3px;
-    }
-    .mini-dot {
-      width: 3px;
-      height: 3px;
-      background-color: #222;
-      border-radius: 50%;
-    }
-    .mini-dot.active { background-color: #666; }
+    .history-section { margin-top: 50px; border-top: 1px solid var(--grid-color); padding-top: 20px; }
+    .history-item { padding: 15px 0; border-bottom: 1px solid #111; }
+    .history-header { display: flex; justify-content: space-between; font-size: 0.85rem; color: #888; margin-bottom: 6px; }
+    
+    /* 履歴ミニバー (36個) */
+    .mini-bar { display: flex; gap: 2px; flex-wrap: wrap; }
+    .mini-dot { width: 3px; height: 3px; background-color: #111; border-radius: 50%; }
 
-    .total-area {
-      margin-top: 20px;
-      text-align: right;
-      color: var(--accent-red);
-      font-size: 1.1rem;
-    }
+    .total-area { margin-top: 20px; text-align: right; color: var(--accent-red); font-size: 1.1rem; }
   </style>
 </head>
 <body id="mainBody">
@@ -167,7 +73,6 @@
     </div>
 
     <input type="text" id="taskName" placeholder="Task Name...">
-    
     <div id="timerDisplay">00:00:00</div>
     
     <div class="progress-outer">
@@ -191,7 +96,9 @@
     let timerInterval;
     const DOTS_PER_ROW = 60;
     const TOTAL_DOTS = DOTS_PER_ROW * 3;
-    const DURATION_TO_FILL = 60 * 1; // 30分で満タン
+    const CYCLE_TIME = 60 * 30; // 30分
+    const MAX_CYCLES = 6;
+    const COLORS = ['#ffffff', '#ff0033', '#ffcc00', '#00ff66', '#0066ff', '#cc00ff'];
 
     function initProgressBar() {
       const container = document.getElementById('progressBar');
@@ -205,21 +112,25 @@
 
     function updateProgressBar() {
       const elapsed = (new Date() - startTime) / 1000;
-      const progress = Math.min(elapsed / DURATION_TO_FILL, 1);
-      // 列単位（2つずつ）で光らせる計算
-      const activeColumns = Math.floor(progress * DOTS_PER_ROW);
+      const cycleIndex = Math.min(Math.floor(elapsed / CYCLE_TIME), MAX_CYCLES - 1);
+      const progressInCycle = (elapsed % CYCLE_TIME) / CYCLE_TIME;
+      const activeCols = Math.floor(progressInCycle * DOTS_PER_ROW);
       
       const dots = document.querySelectorAll('.progress-dot');
       dots.forEach((dot, i) => {
-        const colIndex = i % DOTS_PER_ROW;
-        if (colIndex < activeColumns) dot.classList.add('active');
-        else dot.classList.remove('active');
+        const col = i % DOTS_PER_ROW;
+        if (col < activeCols) {
+          dot.style.backgroundColor = COLORS[cycleIndex];
+          dot.style.boxShadow = `0 0 3px ${COLORS[cycleIndex]}`;
+        } else {
+          // 前のサイクルで塗られた色を維持
+          dot.style.backgroundColor = cycleIndex > 0 ? COLORS[cycleIndex - 1] : '#111';
+          dot.style.boxShadow = cycleIndex > 0 ? `0 0 2px ${COLORS[cycleIndex - 1]}` : 'none';
+        }
       });
     }
 
-    function haptic() {
-      if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(15);
-    }
+    function haptic() { if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(15); }
 
     function startTask() {
       haptic();
@@ -239,17 +150,10 @@
     }
 
     async function stopTask() {
-      haptic();
-      clearInterval(timerInterval);
-      const taskName = document.getElementById('taskName').value || "Untitled";
-      const payload = {
-        taskName: taskName,
-        startTime: startTime.toISOString(),
-        endTime: new Date().toISOString()
-      };
+      haptic(); clearInterval(timerInterval);
+      const payload = { taskName: document.getElementById('taskName').value || "Untitled", startTime: startTime.toISOString(), endTime: new Date().toISOString() };
       document.getElementById('mainBody').classList.remove('recording');
       document.getElementById('stopBtn').disabled = true;
-
       try {
         await fetch(gasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
         document.getElementById('timerDisplay').innerText = "00:00:00";
@@ -260,31 +164,21 @@
     }
 
     function loadHistory() {
-      fetch(gasUrl)
-        .then(res => res.json())
-        .then(data => {
-          const list = document.getElementById('historyList');
-          list.innerHTML = data.history.slice(0, 5).map(item => {
-            // 履歴用ミニバーの計算 (3時間=180分で18個、つまり10分に1個)
-            const activeDots = Math.min(Math.floor(item.duration / 10), 18);
-            let miniDotsHtml = '<div class="mini-bar">';
-            for(let i=0; i<18; i++) {
-              miniDotsHtml += `<div class="mini-dot ${i < activeDots ? 'active' : ''}"></div>`;
-            }
-            miniDotsHtml += '</div>';
-
-            return `
-              <div class="history-item">
-                <div class="history-header">
-                  <span>${item.title.toUpperCase()}</span>
-                  <span>${item.duration} MIN</span>
-                </div>
-                ${miniDotsHtml}
-              </div>
-            `;
-          }).join('');
-          document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
-        });
+      fetch(gasUrl).then(res => res.json()).then(data => {
+        const list = document.getElementById('historyList');
+        list.innerHTML = data.history.slice(0, 5).map(item => {
+          const activeDots = Math.min(Math.floor(item.duration / 10), 36);
+          let miniDotsHtml = '<div class="mini-bar">';
+          for(let i=0; i<36; i++) {
+            const colorIdx = Math.floor(i / 6); // 6個(1時間)ごとに色を変える
+            const color = i < activeDots ? COLORS[colorIdx] : '#111';
+            miniDotsHtml += `<div class="mini-dot" style="background-color: ${color}"></div>`;
+          }
+          miniDotsHtml += '</div>';
+          return `<div class="history-item"><div class="history-header"><span>${item.title.toUpperCase()}</span><span>${item.duration} MIN</span></div>${miniDotsHtml}</div>`;
+        }).join('');
+        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
+      });
     }
 
     initProgressBar();
