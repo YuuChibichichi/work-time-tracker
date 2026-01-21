@@ -239,7 +239,7 @@
         if (!data || !data.history) return;
         const list = document.getElementById('historyList');
         list.innerHTML = data.history.slice(0, 5).map(item => {
-          const active = Math.min(Math.floor(item.duration / 10), 36);
+          const active = Math.min(Math.floor(item.duration / 5), 36);
           let m = '<div class="mini-bar">';
           for(let i=0; i<36; i++) {
             const cIdx = Math.min(Math.floor(i/6), 5);
