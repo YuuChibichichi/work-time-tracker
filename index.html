@@ -68,17 +68,22 @@
 
     /* プログレスバー：不揃い対策でFlexbox化 */
     .progress-outer { padding: 0 50px; width: 100%; box-sizing: border-box; margin-bottom: 30px; }
+
     .progress-container { 
       display: flex; 
       flex-wrap: wrap; 
       justify-content: space-between; 
-      gap: 4px 2px; 
+      gap: 4px 1px; /* 横の隙間を最小限にして3列の密度を上げる */
       width: 100%;
     }
     .progress-dot { 
-      width: var(--dot-size); height: var(--dot-size); 
-      background-color: #111; border-radius: 50%; flex-shrink: 0;
-      transition: background-color 0.2s, box-shadow 0.2s;
+      /* 幅を計算して40個が1行に収まるようにする (約2.5%以下) */
+      width: var(--dot-size); 
+      height: var(--dot-size); 
+      background-color: #111; 
+      border-radius: 50%; 
+      flex: 0 0 auto; /* 柔軟にせずサイズ固定 */
+      transition: background-color 0.2s;
     }
 
     .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
@@ -128,8 +133,10 @@
     let startTime;
     let timerInterval;
     
-    const DOTS_PER_ROW = 40; // ドット数を少し抑えて安定化
-    const TOTAL_DOTS = DOTS_PER_ROW * 3;
+ // --- 定数部分を再定義 ---
+    const DOTS_PER_ROW = 40; 
+    const ROWS = 3; // 3列(3行)固定
+    const TOTAL_DOTS = DOTS_PER_ROW * ROWS; // 確実に120個生成
     const CYCLE_TIME = 1800;
     const COLORS = ['#ffffff', '#00ff66', '#0066ff', '#cc00ff', '#ffcc00', '#ff0033'];
 
@@ -138,9 +145,11 @@
       document.getElementById('modeBtn').innerText = isCompact ? 'EXPAND' : 'MINIMIZE';
     }
 
+   // --- バー生成ロジックを修正 ---
     function initProgressBar() {
       const container = document.getElementById('progressBar');
       container.innerHTML = '';
+      // 3列がズレないよう、確実に TOTAL_DOTS 分の要素を作成
       for (let i = 0; i < TOTAL_DOTS; i++) {
         const dot = document.createElement('div');
         dot.classList.add('progress-dot');
@@ -148,6 +157,7 @@
       }
     }
 
+  // --- 点灯ロジックも列ベースで厳密化 ---
     function updateProgressBar() {
       if (!startTime) return;
       const elapsed = (new Date() - startTime) / 1000;
@@ -156,8 +166,9 @@
       
       const dots = document.querySelectorAll('.progress-dot');
       dots.forEach((dot, i) => {
-        const col = i % DOTS_PER_ROW;
-        if (col < activeCols) {
+        // i % DOTS_PER_ROW により、縦に並ぶ3つのドットが同じ列番号を持つ
+        const colIndex = i % DOTS_PER_ROW; 
+        if (colIndex < activeCols) {
           dot.style.backgroundColor = COLORS[cycleIdx];
           dot.style.boxShadow = `0 0 4px ${COLORS[cycleIdx]}`;
         } else {
