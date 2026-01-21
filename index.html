@@ -64,9 +64,28 @@
 
     #timerDisplay { font-size: 4.8rem; text-align: center; margin: 5px 0; font-variant-numeric: tabular-nums; letter-spacing: -3px; }
 
-    .progress-outer { padding: 0 50px; width: 100%; box-sizing: border-box; margin-bottom: 30px; }
-    .progress-container { display: grid; grid-template-columns: repeat(60, 4px); grid-template-rows: repeat(3, 4px); gap: 2px; justify-content: center; }
-    .progress-dot { width: 3px; height: 3px; background-color: #111; border-radius: 50%; }
+  /* プログレスバーのドットを大きく、安定させる */
+    .progress-outer { 
+      padding: 0 50px; 
+      width: 100%; 
+      box-sizing: border-box; 
+      margin-bottom: 30px; 
+    }
+    .progress-container { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: space-between; /* 隙間を自動調整 */
+      gap: 4px 2px; /* 縦の隙間を少し広めに */
+      width: 100%;
+    }
+    .progress-dot { 
+      width: 5px; /* サイズを大きく (3px -> 5px) */
+      height: 5px; 
+      background-color: #111; 
+      border-radius: 50%; 
+      flex-shrink: 0; /* 潰れないように固定 */
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
 
     .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
     button.action-btn { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 15px; font-family: inherit; cursor: pointer; }
