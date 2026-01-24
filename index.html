@@ -65,9 +65,18 @@
       <div class="section-title" style="text-align:center;">SETUP GUIDE</div>
       <div class="setup-guide">
         <p class="modal-label" style="margin-bottom:10px;">1. 自分のGASを作成</p>
-        <button class="modal-btn" style="background:#333; color:#fff;" onclick="window.open('https://script.google.com/d/1waOLXNpA4LD5itJjeSb4zn2aBpO6XU4rLgAFbXpCNahxe0AV9ogdaQJy/copy', '_blank')">COPY GAS CODE</button>
-        <p class="modal-label" style="font-size:0.55rem;">※コピー後、[デプロイ] > [自分として実行] > [全員に公開] 設定でURLを発行してください。</p>
+       <button class="modal-btn" style="background:#333; color:#fff;" 
+        onclick="window.open('https://script.google.com/d/1waOLXNpA4LD5itJjeSb4zn2aBpO6XU4rLgAFbXpCNahxe0AV9ogdaQJy/edit?usp=sharing', '_blank')">
+        OPEN GAS CODE
+        </button>
+        <p class="modal-label" style="font-size:0.55rem; line-height:1.4; margin-top:5px;">
+          1. 上のボタンでコードを開く<br>
+          2. 左上の「ファイル」＞「コピーを作成」をクリック<br>
+          3. 自分のドライブに保存されたら「デプロイ」を行う
+        </p>
       </div>
+
+
 
       <label class="modal-label">2. GAS Web App URL</label>
       <input type="text" id="settingGasUrl" class="modal-input" placeholder="https://script.google.com/.../exec">
