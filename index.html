@@ -9,11 +9,10 @@
     :root {
       --bg-color: #111111;
       --text-main: #ffffff;
-      --text-dim: #333333;   /* 入力枠などの暗い色 */
-      --text-label: #aaaaaa; /* 明るくしたラベル文字 */
+      --text-dim: #333333;
+      --text-label: #bbbbbb; /* ラベルを明るいグレーに修正 */
       --accent-red: #ff0033;
       --grid-color: #222222;
-      --dot-size: 8px; 
     }
 
     body {
@@ -26,114 +25,94 @@
     }
 
     .container { width: 92%; max-width: 420px; margin-top: 40px; position: relative; }
-    
-    /* ⚙ボタン */
-    .settings-btn {
-      position: absolute; top: 0; right: 0;
-      background: none; border: none; color: var(--text-dim);
-      font-size: 1.2rem; cursor: pointer; z-index: 10;
-    }
+    .settings-btn { position: absolute; top: 0; right: 0; background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; }
 
-    .status-area { display: flex; align-items: center; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; }
-    .status-dot { width: 6px; height: 6px; background-color: var(--accent-red); border-radius: 50%; display: inline-block; margin-right: 6px; opacity: 0; }
-    .recording .status-dot { animation: blink 1s infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; }
-    input[type="text"] { 
-      flex-grow: 1; background: none; border: none; border-bottom: 1px solid var(--text-dim);
-      color: var(--text-main); padding: 8px 0; font-family: inherit; font-size: 0.9rem; outline: none; 
-    }
-    .size-btn { 
-      background: none; border: 1px solid var(--text-dim); color: var(--text-dim);
-      padding: 4px 10px; font-family: inherit; font-size: 0.6rem; cursor: pointer;
-    }
-
+    /* タイマー & プログレス */
     #timerDisplay { font-size: 4.8rem; text-align: center; margin: 10px 0 20px; letter-spacing: 4px; font-variant-numeric: tabular-nums; }
+    .progress-container { display: flex; justify-content: center; gap: 0; margin-bottom: 35px; }
+    .progress-dot { width: 8px; height: 8px; background-color: #222; border-radius: 50%; }
 
-    .progress-outer { padding: 0 10px; width: 100%; box-sizing: border-box; margin-bottom: 35px; }
-    .progress-container { display: flex; justify-content: center; gap: 0; width: 100%; }
-    .progress-column { display: flex; flex-direction: column; gap: 0; }
-    .progress-dot { width: var(--dot-size); height: var(--dot-size); background-color: #222; border-radius: 50%; transition: background-color 0.2s; }
-
-    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-    button.action-btn { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 15px; font-family: inherit; font-size: 1rem; cursor: pointer; }
-    #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
-
-    /* ラベルを明るく修正 */
+    /* ラベル類のデザイン修正 */
     .section-title { font-size: 0.75rem; color: var(--text-label); margin-bottom: 15px; letter-spacing: 4px; }
-    .day-label, .day-time { font-size: 0.6rem; color: var(--text-label); margin-bottom: 5px; }
+    .day-label, .day-time { font-size: 0.6rem; color: var(--text-label); }
+    #totalTime { color: var(--accent-red); font-size: 0.9rem; text-align: right; margin-top: 15px; }
 
+    /* 週間グラフ */
     .weekly-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
-    .day-bar-container {
-      width: 50%; height: 80px; background-color: #222; border-radius: 2px;
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin: 0 auto 8px;
-    }
+    .day-bar-container { width: 50%; height: 80px; background-color: #222; border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin: 5px auto; }
     .day-bar { width: 100%; background-color: var(--text-main); transition: height 0.5s; }
 
-    .history-item { padding: 12px 0; border-bottom: 1px solid #222; }
-    .history-item span { color: var(--text-main); }
-
-    /* モーダル内のテキスト */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
+    /* 設定モーダル */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
     .modal.show { display: flex; }
-    .modal-content { width: 85%; max-width: 350px; background: #111; border: 1px solid #333; padding: 25px; }
-    .modal-title { color: var(--text-label); text-align: center; margin-bottom: 20px; letter-spacing: 4px; }
-    .modal-label { display: block; color: var(--text-label); margin-bottom: 5px; font-size: 0.7rem; }
-    .modal-input { width: 100%; background: #222; border: none; color: #fff; padding: 12px; margin-bottom: 15px; font-family: inherit; box-sizing: border-box; }
+    .modal-content { width: 85%; max-width: 360px; background: #111; border: 1px solid #333; padding: 25px; }
+    .modal-label { display: block; color: var(--text-label); font-size: 0.7rem; margin-bottom: 5px; }
+    .modal-input { width: 100%; background: #222; border: none; color: #fff; padding: 12px; margin-bottom: 15px; font-family: inherit; box-sizing: border-box; font-size: 0.8rem; }
     .modal-btn { width: 100%; background: #fff; color: #000; border: none; padding: 12px; font-family: inherit; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
-    .auth-hint { font-size: 0.6rem; color: #666; margin-bottom: 15px; line-height: 1.4; }
+    .setup-guide { border-left: 2px solid var(--accent-red); padding-left: 10px; margin-bottom: 20px; }
 
-    body.compact-mode .history-section, body.compact-mode .btn-group, body.compact-mode .weekly-section, body.compact-mode .status-area, body.compact-mode .settings-btn { display: none; }
+    /* 各種ボタン */
+    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+    .action-btn { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 15px; font-family: inherit; cursor: pointer; }
+    #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
+    input[type="text"]#taskName { flex-grow: 1; background: none; border: none; border-bottom: 1px solid var(--text-dim); color: var(--text-main); padding: 8px 0; font-family: inherit; outline: none; }
   </style>
 </head>
-<body id="mainBody">
+<body>
 
   <div id="settingsModal" class="modal">
     <div class="modal-content">
-      <div class="modal-title">SETTINGS</div>
-      
-      <label class="modal-label">1. GAS Web App URL</label>
-      <input type="text" id="settingGasUrl" class="modal-input" placeholder="https://script.google.com/...">
-      
-      <label class="modal-label">2. Permission</label>
-      <button class="modal-btn" style="background:#333; color:#fff;" onclick="authorizeGas()">AUTHORIZE ON GOOGLE</button>
-      <p class="auth-hint">※初回のみ必須。別タブで「許可」ボタンを押してから戻ってください。</p>
+      <div class="section-title" style="text-align:center;">SETUP GUIDE</div>
+      <div class="setup-guide">
+        <p class="modal-label" style="margin-bottom:10px;">1. 自分のGASを作成</p>
+        <button class="modal-btn" style="background:#333; color:#fff;" onclick="window.open('https://script.google.com/home/projects/1A2B3C4D5E6F/copy', '_blank')">COPY GAS CODE</button>
+        <p class="modal-label" style="font-size:0.55rem;">※コピー後、[デプロイ] > [自分として実行] > [全員に公開] 設定でURLを発行してください。</p>
+      </div>
 
-      <label class="modal-label">3. Calendar ID (Email)</label>
-      <input type="text" id="settingCalId" class="modal-input" placeholder="example@gmail.com">
+      <label class="modal-label">2. GAS Web App URL</label>
+      <input type="text" id="settingGasUrl" class="modal-input" placeholder="https://script.google.com/.../exec">
+
+      <label class="modal-label">3. Calendar ID</label>
+      <input type="text" id="settingCalId" class="modal-input" placeholder="your-email@gmail.com">
       
-      <button class="modal-btn" onclick="saveSettings()">SAVE ALL</button>
+      <button class="modal-btn" onclick="saveSettings()">SAVE & SYNC</button>
       <div style="text-align:center;"><span onclick="closeSettings()" style="color:#555; cursor:pointer; font-size:0.7rem;">CLOSE</span></div>
     </div>
   </div>
 
   <div class="container">
     <button class="settings-btn" onclick="openSettings()">⚙</button>
-    <div class="status-area"><span class="status-dot"></span><span>Lapse</span></div>
-    <div class="header-nav">
+    <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:10px;">Lapse</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:15px;">
       <input type="text" id="taskName" placeholder="Task Name...">
-      <button class="size-btn" onclick="toggleCompactMode()" id="modeBtn">MINIMIZE</button>
     </div>
+    
     <div id="timerDisplay">00:00:00</div>
-    <div class="progress-outer"><div id="progressBar" class="progress-container"></div></div>
+    <div id="progressBar" class="progress-container"></div>
+
     <div class="btn-group">
       <button class="action-btn" id="startBtn" onclick="startTask()">START</button>
       <button class="action-btn" id="stopBtn" onclick="stopTask()" disabled>STOP</button>
     </div>
-    <div class="weekly-section"><div class="section-title">WEEKLY</div><div id="weeklyReport" class="weekly-grid"></div></div>
-    <div class="history-section"><div class="section-title">RECENT</div><div id="historyList"></div><div id="totalTime" style="text-align:right; color:#ff0033; margin-top:15px; font-size: 0.9rem;"></div></div>
+
+    <div class="section-title">WEEKLY</div>
+    <div id="weeklyReport" class="weekly-grid"></div>
+
+    <div style="margin-top:30px;">
+      <div class="section-title">RECENT</div>
+      <div id="historyList"></div>
+      <div id="totalTime"></div>
+    </div>
   </div>
 
   <script>
     let appGasUrl = localStorage.getItem('lapse_gasUrl') || "";
     let appCalId = localStorage.getItem('lapse_calId') || "";
     let startTime, timerInterval;
-    const DOTS_PER_ROW = 40, CYCLE_TIME = 1800, COLORS = ['#ffffff', '#00ff66', '#0066ff', '#cc00ff', '#ffcc00', '#ff0033'], WEEK_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const COLORS = ['#ffffff', '#00ff66', '#0066ff', '#cc00ff', '#ffcc00', '#ff0033'];
 
     function openSettings() { document.getElementById('settingGasUrl').value = appGasUrl; document.getElementById('settingCalId').value = appCalId; document.getElementById('settingsModal').classList.add('show'); }
     function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
-    function authorizeGas() { const url = document.getElementById('settingGasUrl').value.trim(); if(url) window.open(url, '_blank'); else alert("Enter GAS URL first."); }
     function saveSettings() {
       appGasUrl = document.getElementById('settingGasUrl').value.trim();
       appCalId = document.getElementById('settingCalId').value.trim();
@@ -142,94 +121,43 @@
       closeSettings(); loadData();
     }
 
-    function toggleCompactMode() { const isCompact = document.body.classList.toggle('compact-mode'); document.getElementById('modeBtn').innerText = isCompact ? 'EXPAND' : 'MINIMIZE'; }
-
     function initProgressBar() {
       const container = document.getElementById('progressBar'); container.innerHTML = '';
-      for (let i = 0; i < DOTS_PER_ROW; i++) {
-        const column = document.createElement('div'); column.classList.add('progress-column');
-        for (let j = 0; j < 3; j++) { const dot = document.createElement('div'); dot.classList.add('progress-dot'); column.appendChild(dot); }
-        container.appendChild(column);
+      for (let i = 0; i < 40; i++) {
+        const dot = document.createElement('div'); dot.classList.add('progress-dot');
+        container.appendChild(dot);
       }
     }
 
-    function updateProgressBar() {
-      if (!startTime) return;
-      const elapsed = (new Date() - startTime) / 1000;
-      const effectiveElapsed = Math.min(elapsed, CYCLE_TIME * COLORS.length);
-      let cycleIdx = Math.floor(effectiveElapsed / CYCLE_TIME), progressInCycle = (effectiveElapsed % CYCLE_TIME) / CYCLE_TIME;
-      const activeCols = Math.floor(progressInCycle * DOTS_PER_ROW);
-      document.querySelectorAll('.progress-column').forEach((col, i) => {
-        col.querySelectorAll('.progress-dot').forEach(dot => {
-          if (i < activeCols) { dot.style.backgroundColor = COLORS[cycleIdx]; dot.style.boxShadow = `0 0 4px ${COLORS[cycleIdx]}`; }
-          else { dot.style.backgroundColor = cycleIdx > 0 ? COLORS[cycleIdx-1] : '#222'; dot.style.boxShadow = 'none'; }
-        });
-      });
-    }
-
     function startTask() {
-      if(!appGasUrl || !appCalId) { openSettings(); return; }
-      startTime = new Date(); document.getElementById('mainBody').classList.add('recording');
-      document.getElementById('startBtn').disabled = true; document.getElementById('stopBtn').disabled = false;
-      initProgressBar(); timerInterval = setInterval(() => {
+      if(!appGasUrl) { openSettings(); return; }
+      startTime = new Date(); document.getElementById('startBtn').disabled = true; document.getElementById('stopBtn').disabled = false;
+      timerInterval = setInterval(() => {
         const d = new Date() - startTime;
-        document.getElementById('timerDisplay').innerText = `${String(Math.floor(d/3600000)).padStart(2,'0')}:${String(Math.floor((d%3600000)/60000)).padStart(2,'0')}:${String(Math.floor((d%60000)/1000)).padStart(2,'0')}`;
-        updateProgressBar();
+        document.getElementById('timerDisplay').innerText = new Date(d).toISOString().substr(11, 8);
       }, 1000);
     }
 
     async function stopTask() {
       clearInterval(timerInterval);
       const payload = { calendarId: appCalId, taskName: document.getElementById('taskName').value || "Untitled", startTime: startTime.toISOString(), endTime: new Date().toISOString() };
-      document.getElementById('mainBody').classList.remove('recording');
-      try { 
-        await fetch(appGasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        document.getElementById('timerDisplay').innerText = "00:00:00"; document.getElementById('taskName').value = "";
-        document.getElementById('startBtn').disabled = false; document.getElementById('stopBtn').disabled = true;
-        setTimeout(loadData, 1500); 
-      } catch (e) { console.error(e); }
+      await fetch(appGasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+      document.getElementById('startBtn').disabled = false; document.getElementById('stopBtn').disabled = true;
+      setTimeout(loadData, 1000);
     }
 
-      function loadData() {
-      if (!appGasUrl || !appCalId) return;
-    
-      // 以前のスクリプトタグがあれば削除
-      const oldScript = document.getElementById('jsonp-script');
-      if (oldScript) oldScript.remove();
-    
-      // JSONP用のコールバック関数をグローバルに定義
-      window.handleGasResponse = function(data) {
-        if (data.error) {
-          console.error("GAS Error:", data.error);
-          return;
-        }
-        renderHistory(data.history || []);
-        renderWeeklyReport(data.weekly || {});
-        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime || "0h 0m"}`;
+    function loadData() {
+      if(!appGasUrl) return;
+      window.handleGasResponse = (data) => {
+        if (data.error) return;
+        document.getElementById('historyList').innerHTML = data.history.map(item => `<div style="padding:10px 0; border-bottom:1px solid #222; font-size:0.8rem; display:flex; justify-content:space-between;"><span>${item.title.toUpperCase()}</span><span style="color:var(--text-label)">${item.duration}m</span></div>`).join('');
+        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
+        const max = Math.max(...Object.values(data.weekly), 1);
+        document.getElementById('weeklyReport').innerHTML = Object.entries(data.weekly).map(([day, min]) => `<div class="day-column"><div class="day-label">${day}</div><div class="day-bar-container"><div class="day-bar" style="height:${(min/max)*100}%"></div></div><div class="day-time">${Math.floor(min/60)}h</div></div>`).join('');
       };
-    
-      // スクリプトタグを作成して読み込む（これでCORSを回避）
       const script = document.createElement('script');
-      script.id = 'jsonp-script';
       script.src = `${appGasUrl}?calendarId=${encodeURIComponent(appCalId)}&callback=handleGasResponse&_t=${Date.now()}`;
       document.body.appendChild(script);
-    }
-
-    function renderHistory(history) {
-      document.getElementById('historyList').innerHTML = history.map(item => {
-        const active = Math.min(Math.floor(item.duration / 10), 36);
-        let m = '<div style="display:flex; gap:1px; margin-top:6px; flex-wrap:wrap;">';
-        for(let i=0; i<36; i++) m += `<div class="mini-dot" style="background-color: ${i < active ? COLORS[Math.min(Math.floor(i/6), 5)] : '#222'}"></div>`;
-        return `<div class="history-item"><div style="display:flex;justify-content:space-between;font-size:0.8rem;"><span>${item.title.toUpperCase()}</span><span>${item.duration}m</span></div>${m}</div></div>`;
-      }).join('');
-    }
-
-    function renderWeeklyReport(weeklyData) {
-      const maxMin = Math.max(...Object.values(weeklyData), 1);
-      document.getElementById('weeklyReport').innerHTML = WEEK_DAYS.map(day => {
-        const mins = weeklyData[day] || 0;
-        return `<div class="day-column"><div class="day-label">${day}</div><div class="day-bar-container"><div class="day-bar" style="height: ${(mins/maxMin)*100}%;"></div></div><div class="day-time">${Math.floor(mins/60)}h</div></div>`;
-      }).join('');
     }
 
     initProgressBar(); loadData();
