@@ -8,12 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #000000;
+      /* 背景色をNothing風グレーに変更 */
+      --bg-color: #111111;
       --text-main: #ffffff;
-      --text-sub: #333333;
+      --text-sub: #888888;
       --accent-red: #ff0033;
-      --grid-color: #1a1a1a;
-      --dot-size: 5px;
+      --grid-color: #222222;
+      /* ドットを大きくして隙間を埋める */
+      --dot-size: 8px; 
     }
 
     body {
@@ -22,21 +24,23 @@
       background-size: 20px 20px;
       color: var(--text-main);
       font-family: 'DotGothic16', sans-serif;
+      /* フォントを太く */
+      font-weight: bold; 
       margin: 0;
       display: flex; flex-direction: column; align-items: center; min-height: 100vh;
       transition: all 0.3s ease;
       overflow-x: hidden;
     }
 
-    .container { width: 95%; max-width: 400px; margin-top: 40px; transition: margin 0.3s; }
+    .container { width: 92%; max-width: 420px; margin-top: 40px; transition: margin 0.3s; }
     
-    /* コンパクトモード */
     body.compact-mode .history-section,
-    body.compact-mode .btn-group { display: none; }
-    body.compact-mode .container { margin-top: 10px; }
+    body.compact-mode .btn-group,
+    body.compact-mode .weekly-section { display: none; }
+    body.compact-mode .container { margin-top: 15px; }
 
-    .status-area { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-sub); margin-bottom: 5px; }
-    .status-dot { width: 5px; height: 5px; background-color: var(--accent-red); border-radius: 50%; display: inline-block; margin-right: 5px; opacity: 0; }
+    .status-area { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-sub); margin-bottom: 10px; letter-spacing: 1px; }
+    .status-dot { width: 6px; height: 6px; background-color: var(--accent-red); border-radius: 50%; display: inline-block; margin-right: 6px; opacity: 0; }
     .recording .status-dot { animation: blink 1s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -44,54 +48,87 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       gap: 15px;
     }
 
     input[type="text"] {
       flex-grow: 1; 
-      background: none; border: none; border-bottom: 1px solid var(--text-sub);
-      color: var(--text-main); padding: 5px 0; font-family: inherit; font-size: 0.9rem;
+      background: none; border: none; border-bottom: 2px solid var(--text-sub);
+      color: var(--text-main); padding: 8px 0; font-family: inherit; font-size: 1rem; font-weight: bold;
       outline: none; text-align: left;
     }
 
     .size-btn {
-      background: none; border: 1px solid var(--text-sub); color: var(--text-sub);
-      padding: 4px 10px; font-family: inherit; font-size: 0.6rem; cursor: pointer;
+      background: none; border: 2px solid var(--text-sub); color: var(--text-sub);
+      padding: 6px 12px; font-family: inherit; font-size: 0.65rem; font-weight: bold; cursor: pointer;
       letter-spacing: 1px; transition: 0.2s; white-space: nowrap;
     }
     .size-btn:hover { border-color: var(--text-main); color: var(--text-main); }
 
-    #timerDisplay { font-size: 4.8rem; text-align: center; margin: 5px 0; font-variant-numeric: tabular-nums; letter-spacing: -3px; }
+    #timerDisplay { font-size: 5rem; text-align: center; margin: 10px 0 20px; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
 
-    /* プログレスバー：縦1列を1つのユニットにする */
-    .progress-outer { padding: 0 50px; width: 100%; box-sizing: border-box; margin-bottom: 30px; }
+    /* 密集型プログレスバー */
+    .progress-outer { padding: 0 10px; width: 100%; box-sizing: border-box; margin-bottom: 35px; }
     .progress-container { 
       display: flex; 
-      justify-content: space-between; 
+      justify-content: center; /* 中央寄せ */
+      gap: 1px; /* 隙間を最小限に */
       width: 100%;
     }
     .progress-column {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 1px; /* 縦の隙間も最小限に */
     }
     .progress-dot { 
       width: var(--dot-size); height: var(--dot-size); 
-      background-color: #111; border-radius: 50%;
+      background-color: #222; border-radius: 2px; /* 少し角を丸める */
       transition: background-color 0.2s, box-shadow 0.2s;
     }
 
-    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-    button.action-btn { background: none; border: 1px solid var(--text-main); color: var(--text-main); padding: 15px; font-family: inherit; cursor: pointer; }
+    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+    button.action-btn { background: none; border: 2px solid var(--text-main); color: var(--text-main); padding: 18px; font-family: inherit; font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 2px; }
     #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
-    button:disabled { opacity: 0.2; }
+    button:disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--text-sub); color: var(--text-sub); }
 
-    .history-section { border-top: 1px solid var(--grid-color); padding-top: 15px; width: 100%; }
-    .history-item { padding: 15px 0; border-bottom: 1px solid #111; }
-    .mini-bar { display: flex; gap: 2px; margin-top: 5px; flex-wrap: wrap; }
-    .mini-dot { width: 3px; height: 3px; background-color: #111; border-radius: 50%; }
-    .total-area { text-align: right; color: var(--accent-red); margin-top: 10px; }
+    /* 週間レポートセクション */
+    .weekly-section { margin-bottom: 30px; }
+    .section-title { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 15px; letter-spacing: 1px; }
+    .weekly-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+    .day-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .day-label { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 8px; }
+    .day-bar-container {
+      width: 100%;
+      height: 80px; /* バーの最大高さ */
+      background-color: #222;
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .day-bar {
+      width: 100%;
+      background-color: var(--text-main);
+      transition: height 0.5s ease;
+    }
+    .day-time { font-size: 0.7rem; white-space: nowrap; }
+
+    .history-section { border-top: 2px solid var(--grid-color); padding-top: 20px; width: 100%; }
+    .history-item { padding: 12px 0; border-bottom: 1px solid #222; }
+    .mini-bar { display: flex; gap: 2px; margin-top: 6px; flex-wrap: wrap; }
+    .mini-dot { width: 4px; height: 4px; background-color: #222; border-radius: 1px; }
+    .total-area { text-align: right; color: var(--accent-red); margin-top: 15px; font-size: 1.1rem; }
   </style>
 </head>
 <body id="mainBody">
@@ -118,20 +155,30 @@
       <button class="action-btn" id="stopBtn" onclick="stopTask()" disabled>STOP</button>
     </div>
 
+    <div class="weekly-section">
+      <div class="section-title">WEEKLY REPORT</div>
+      <divid="weeklyReport" class="weekly-grid">
+        </div>
+    </div>
+
     <div class="history-section">
+      <div class="section-title">RECENT LOGS</div>
       <div id="historyList"></div>
       <div id="totalTime" class="total-area"></div>
     </div>
   </div>
 
   <script>
+    // ★ここにあなたの新しいGASのURLを貼る★
     const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec";
+    
     let startTime;
     let timerInterval;
     
     const DOTS_PER_ROW = 40; 
-    const CYCLE_TIME = 40; // 30分
+    const CYCLE_TIME = 1800; // 30分
     const COLORS = ['#ffffff', '#00ff66', '#0066ff', '#cc00ff', '#ffcc00', '#ff0033'];
+    const WEEK_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
     function toggleCompactMode() {
       const isCompact = document.body.classList.toggle('compact-mode');
@@ -141,7 +188,6 @@
     function initProgressBar() {
       const container = document.getElementById('progressBar');
       container.innerHTML = '';
-      // 40個の「縦列ユニット」を作成
       for (let i = 0; i < DOTS_PER_ROW; i++) {
         const column = document.createElement('div');
         column.classList.add('progress-column');
@@ -157,19 +203,15 @@
     function updateProgressBar() {
       if (!startTime) return;
       const elapsed = (new Date() - startTime) / 1000;
-      
-      // 3時間を最大値として計算を固定する (30分 * 6サイクル = 10800秒)
       const MAX_TOTAL_TIME = CYCLE_TIME * COLORS.length;
       const effectiveElapsed = Math.min(elapsed, MAX_TOTAL_TIME);
       
-      // どのサイクル(色)にいるか
       let cycleIdx = Math.floor(effectiveElapsed / CYCLE_TIME);
-      
-      // 進捗率の計算 (3時間を超えたら100%に固定)
       let progressInCycle;
+
       if (effectiveElapsed >= MAX_TOTAL_TIME) {
-        cycleIdx = COLORS.length - 1; // 最後の色(赤)に固定
-        progressInCycle = 1;         // バーを全点灯に固定
+        cycleIdx = COLORS.length - 1;
+        progressInCycle = 1;
       } else {
         progressInCycle = (effectiveElapsed % CYCLE_TIME) / CYCLE_TIME;
       }
@@ -181,16 +223,14 @@
         const dots = col.querySelectorAll('.progress-dot');
         dots.forEach(dot => {
           if (i < activeCols) {
-            // 現在のサイクルの色で点灯
             dot.style.backgroundColor = COLORS[cycleIdx];
-            dot.style.boxShadow = `0 0 4px ${COLORS[cycleIdx]}`;
+            dot.style.boxShadow = `0 0 6px ${COLORS[cycleIdx]}`; // 発光を少し強く
           } else {
-            // 前のサイクルの色を維持 (最初のサイクルなら暗色)
             if (cycleIdx > 0) {
               dot.style.backgroundColor = COLORS[cycleIdx - 1];
               dot.style.boxShadow = 'none';
             } else {
-              dot.style.backgroundColor = '#111';
+              dot.style.backgroundColor = '#222';
               dot.style.boxShadow = 'none';
             }
           }
@@ -230,29 +270,67 @@
         document.getElementById('timerDisplay').innerText = "00:00:00";
         document.getElementById('taskName').value = "";
         document.getElementById('startBtn').disabled = false;
-        setTimeout(loadHistory, 1000);
+        initProgressBar(); // リセット
+        setTimeout(loadData, 1000); // データ再読み込み
       } catch (e) { console.error(e); }
     }
 
-    function loadHistory() {
+    // データ読み込み（履歴＋週間レポート）
+    function loadData() {
       fetch(gasUrl).then(res => res.json()).then(data => {
-        if (!data || !data.history) return;
+        if (!data) return;
+        renderHistory(data.history);
+        renderWeeklyReport(data.weekly);
+        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
+      }).catch(e => console.error("Data Load Error:", e));
+    }
+
+    function renderHistory(history) {
         const list = document.getElementById('historyList');
-        list.innerHTML = data.history.slice(0, 5).map(item => {
-          const active = Math.min(Math.floor(item.duration / 5), 36);
+        if (!history || history.length === 0) {
+            list.innerHTML = '<div style="color:var(--text-sub);font-size:0.8rem;">No recent logs.</div>';
+            return;
+        }
+        list.innerHTML = history.map(item => {
+          const active = Math.min(Math.floor(item.duration / 10), 36);
           let m = '<div class="mini-bar">';
           for(let i=0; i<36; i++) {
             const cIdx = Math.min(Math.floor(i/6), 5);
-            m += `<div class="mini-dot" style="background-color: ${i < active ? COLORS[cIdx] : '#111'}"></div>`;
+            m += `<div class="mini-dot" style="background-color: ${i < active ? COLORS[cIdx] : '#222'}"></div>`;
           }
-          return `<div class="history-item"><div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#888;"><span>${item.title.toUpperCase()}</span><span>${item.duration}m</span></div>${m}</div>`;
+          return `<div class="history-item"><div style="display:flex;justify-content:space-between;font-size:0.9rem;font-weight:bold;"><span>${item.title.toUpperCase()}</span><span>${item.duration}m</span></div>${m}</div>`;
         }).join('');
-        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
-      }).catch(e => console.error("History Load Error:", e));
+    }
+
+    // 週間レポート描画
+    function renderWeeklyReport(weeklyData) {
+        const container = document.getElementById('weeklyReport');
+        if (!weeklyData) return;
+
+        // 最大値を見つけてバーの比率を計算（最大を100%とする）
+        const maxMin = Math.max(...Object.values(weeklyData), 1); // 0除算防止
+
+        container.innerHTML = WEEK_DAYS.map(day => {
+            const minutes = weeklyData[day] || 0;
+            const heightPercent = (minutes / maxMin) * 100;
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+
+            return `
+                <div class="day-column">
+                    <div class="day-label">${day}</div>
+                    <div class="day-bar-container">
+                        <div class="day-bar" style="height: ${heightPercent}%;"></div>
+                    </div>
+                    <div class="day-time">${timeStr}</div>
+                </div>
+            `;
+        }).join('');
     }
 
     initProgressBar();
-    loadHistory();
+    loadData();
   </script>
 </body>
 </html>
