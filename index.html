@@ -8,13 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* 背景色をNothing風グレーに変更 */
       --bg-color: #111111;
       --text-main: #ffffff;
       --text-sub: #888888;
       --accent-red: #ff0033;
       --grid-color: #222222;
-      /* ドットを大きくして隙間を埋める */
       --dot-size: 8px; 
     }
 
@@ -24,7 +22,6 @@
       background-size: 20px 20px;
       color: var(--text-main);
       font-family: 'DotGothic16', sans-serif;
-      /* フォントを太く */
       font-weight: bold; 
       margin: 0;
       display: flex; flex-direction: column; align-items: center; min-height: 100vh;
@@ -33,96 +30,36 @@
     }
 
     .container { width: 92%; max-width: 420px; margin-top: 40px; transition: margin 0.3s; }
-    
-    body.compact-mode .history-section,
-    body.compact-mode .btn-group,
-    body.compact-mode .weekly-section { display: none; }
+    body.compact-mode .history-section, body.compact-mode .btn-group, body.compact-mode .weekly-section { display: none; }
     body.compact-mode .container { margin-top: 15px; }
 
-    .status-area { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-sub); margin-bottom: 10px; letter-spacing: 1px; }
+    .status-area { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-sub); margin-bottom: 10px; }
     .status-dot { width: 6px; height: 6px; background-color: var(--accent-red); border-radius: 50%; display: inline-block; margin-right: 6px; opacity: 0; }
     .recording .status-dot { animation: blink 1s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    .header-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 15px;
-    }
-
-    input[type="text"] {
-      flex-grow: 1; 
-      background: none; border: none; border-bottom: 2px solid var(--text-sub);
-      color: var(--text-main); padding: 8px 0; font-family: inherit; font-size: 1rem; font-weight: bold;
-      outline: none; text-align: left;
-    }
-
-    .size-btn {
-      background: none; border: 2px solid var(--text-sub); color: var(--text-sub);
-      padding: 6px 12px; font-family: inherit; font-size: 0.65rem; font-weight: bold; cursor: pointer;
-      letter-spacing: 1px; transition: 0.2s; white-space: nowrap;
-    }
-    .size-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+    .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; }
+    input[type="text"] { flex-grow: 1; background: none; border: none; border-bottom: 2px solid var(--text-sub); color: var(--text-main); padding: 8px 0; font-family: inherit; font-size: 1rem; font-weight: bold; outline: none; }
+    .size-btn { background: none; border: 2px solid var(--text-sub); color: var(--text-sub); padding: 6px 12px; font-family: inherit; font-size: 0.65rem; font-weight: bold; cursor: pointer; }
 
     #timerDisplay { font-size: 5rem; text-align: center; margin: 10px 0 20px; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
 
     /* 密集型プログレスバー */
     .progress-outer { padding: 0 10px; width: 100%; box-sizing: border-box; margin-bottom: 35px; }
-    .progress-container { 
-      display: flex; 
-      justify-content: center; /* 中央寄せ */
-      gap: 1px; /* 隙間を最小限に */
-      width: 100%;
-    }
-    .progress-column {
-      display: flex;
-      flex-direction: column;
-      gap: 1px; /* 縦の隙間も最小限に */
-    }
-    .progress-dot { 
-      width: var(--dot-size); height: var(--dot-size); 
-      background-color: #222; border-radius: 2px; /* 少し角を丸める */
-      transition: background-color 0.2s, box-shadow 0.2s;
-    }
+    .progress-container { display: flex; justify-content: center; gap: 1px; width: 100%; }
+    .progress-column { display: flex; flex-direction: column; gap: 1px; }
+    .progress-dot { width: var(--dot-size); height: var(--dot-size); background-color: #222; border-radius: 2px; transition: background-color 0.2s; }
 
     .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-    button.action-btn { background: none; border: 2px solid var(--text-main); color: var(--text-main); padding: 18px; font-family: inherit; font-size: 1rem; font-weight: bold; cursor: pointer; letter-spacing: 2px; }
+    button.action-btn { background: none; border: 2px solid var(--text-main); color: var(--text-main); padding: 18px; font-family: inherit; font-size: 1rem; font-weight: bold; cursor: pointer; }
     #stopBtn { border-color: var(--accent-red); color: var(--accent-red); }
-    button:disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--text-sub); color: var(--text-sub); }
 
-    /* 週間レポートセクション */
     .weekly-section { margin-bottom: 30px; }
-    .section-title { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 15px; letter-spacing: 1px; }
-    .weekly-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      text-align: center;
-    }
-    .day-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .day-label { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 8px; }
-    .day-bar-container {
-      width: 100%;
-      height: 80px; /* バーの最大高さ */
-      background-color: #222;
-      border-radius: 4px;
-      display: flex;
-      align-items: flex-end;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-    .day-bar {
-      width: 100%;
-      background-color: var(--text-main);
-      transition: height 0.5s ease;
-    }
-    .day-time { font-size: 0.7rem; white-space: nowrap; }
+    .section-title { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 15px; }
+    .weekly-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+    .day-bar-container { width: 100%; height: 80px; background-color: #222; border-radius: 4px; display: flex; align-items: flex-end; overflow: hidden; margin-bottom: 8px; }
+    .day-bar { width: 100%; background-color: var(--text-main); transition: height 0.5s ease; }
+    .day-time { font-size: 0.6rem; white-space: nowrap; }
 
     .history-section { border-top: 2px solid var(--grid-color); padding-top: 20px; width: 100%; }
     .history-item { padding: 12px 0; border-bottom: 1px solid #222; }
@@ -132,51 +69,30 @@
   </style>
 </head>
 <body id="mainBody">
-
   <div class="container">
-    <div class="status-area">
-      <span><span class="status-dot"></span>Work Logging</span>
-      <span>Lapse</span>
-    </div>
-
+    <div class="status-area"><span><span class="status-dot"></span>Work Logging</span><span>Lapse</span></div>
     <div class="header-nav">
       <input type="text" id="taskName" placeholder="Task Name...">
       <button class="size-btn" onclick="toggleCompactMode()" id="modeBtn">MINIMIZE</button>
     </div>
-
     <div id="timerDisplay">00:00:00</div>
-    
-    <div class="progress-outer">
-      <div id="progressBar" class="progress-container"></div>
-    </div>
-
+    <div class="progress-outer"><div id="progressBar" class="progress-container"></div></div>
     <div class="btn-group">
       <button class="action-btn" id="startBtn" onclick="startTask()">START</button>
       <button class="action-btn" id="stopBtn" onclick="stopTask()" disabled>STOP</button>
     </div>
-
-    <div class="weekly-section">
-      <div class="section-title">WEEKLY REPORT</div>
-      <divid="weeklyReport" class="weekly-grid">
-        </div>
-    </div>
-
-    <div class="history-section">
-      <div class="section-title">RECENT LOGS</div>
-      <div id="historyList"></div>
-      <div id="totalTime" class="total-area"></div>
-    </div>
+    <div class="weekly-section"><div class="section-title">WEEKLY REPORT</div><div id="weeklyReport" class="weekly-grid"></div></div>
+    <div class="history-section"><div class="section-title">RECENT LOGS</div><div id="historyList"></div><div id="totalTime" class="total-area"></div></div>
   </div>
 
   <script>
-    // ★ここにあなたの新しいGASのURLを貼る★
-    const gasUrl = "https://script.google.com/macros/s/AKfycbxekGf21dxDwu_PgNrW6anyJ1hsYWq0eKfPuR9ElVVAH5-Ev6n27R9jbiiv6FxVxjhy/exec";
+    // ★デプロイしたWebアプリのURLに書き換えてください★
+    const gasUrl = "https://script.google.com/macros/s/AKfycbyfD0Uvj_T_P-xXm2f6Y3-0m8-i-A79B-8q-VjF8g/exec";
     
     let startTime;
     let timerInterval;
-    
     const DOTS_PER_ROW = 40; 
-    const CYCLE_TIME = 1800; // 30分
+    const CYCLE_TIME = 1800;
     const COLORS = ['#ffffff', '#00ff66', '#0066ff', '#cc00ff', '#ffcc00', '#ff0033'];
     const WEEK_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
@@ -205,64 +121,40 @@
       const elapsed = (new Date() - startTime) / 1000;
       const MAX_TOTAL_TIME = CYCLE_TIME * COLORS.length;
       const effectiveElapsed = Math.min(elapsed, MAX_TOTAL_TIME);
-      
       let cycleIdx = Math.floor(effectiveElapsed / CYCLE_TIME);
-      let progressInCycle;
-
-      if (effectiveElapsed >= MAX_TOTAL_TIME) {
-        cycleIdx = COLORS.length - 1;
-        progressInCycle = 1;
-      } else {
-        progressInCycle = (effectiveElapsed % CYCLE_TIME) / CYCLE_TIME;
-      }
-      
+      let progressInCycle = (effectiveElapsed >= MAX_TOTAL_TIME) ? 1 : (effectiveElapsed % CYCLE_TIME) / CYCLE_TIME;
       const activeCols = Math.floor(progressInCycle * DOTS_PER_ROW);
-      
       const columns = document.querySelectorAll('.progress-column');
       columns.forEach((col, i) => {
-        const dots = col.querySelectorAll('.progress-dot');
-        dots.forEach(dot => {
+        col.querySelectorAll('.progress-dot').forEach(dot => {
           if (i < activeCols) {
             dot.style.backgroundColor = COLORS[cycleIdx];
-            dot.style.boxShadow = `0 0 6px ${COLORS[cycleIdx]}`; // 発光を少し強く
+            dot.style.boxShadow = `0 0 6px ${COLORS[cycleIdx]}`;
           } else {
-            if (cycleIdx > 0) {
-              dot.style.backgroundColor = COLORS[cycleIdx - 1];
-              dot.style.boxShadow = 'none';
-            } else {
-              dot.style.backgroundColor = '#222';
-              dot.style.boxShadow = 'none';
-            }
+            dot.style.backgroundColor = cycleIdx > 0 ? COLORS[cycleIdx-1] : '#222';
+            dot.style.boxShadow = 'none';
           }
         });
       });
     }
 
-    function haptic() { if (window.navigator?.vibrate) window.navigator.vibrate(15); }
-
     function startTask() {
-      haptic(); startTime = new Date();
+      startTime = new Date();
       document.getElementById('mainBody').classList.add('recording');
       document.getElementById('startBtn').disabled = true;
       document.getElementById('stopBtn').disabled = false;
       initProgressBar();
       timerInterval = setInterval(() => {
         const d = new Date() - startTime;
-        const h = String(Math.floor(d/3600000)).padStart(2,'0');
-        const m = String(Math.floor((d%3600000)/60000)).padStart(2,'0');
-        const s = String(Math.floor((d%60000)/1000)).padStart(2,'0');
-        document.getElementById('timerDisplay').innerText = `${h}:${m}:${s}`;
+        document.getElementById('timerDisplay').innerText = 
+          `${String(Math.floor(d/3600000)).padStart(2,'0')}:${String(Math.floor((d%3600000)/60000)).padStart(2,'0')}:${String(Math.floor((d%60000)/1000)).padStart(2,'0')}`;
         updateProgressBar();
       }, 1000);
     }
 
     async function stopTask() {
-      haptic(); clearInterval(timerInterval);
-      const payload = { 
-        taskName: document.getElementById('taskName').value || "Untitled", 
-        startTime: startTime.toISOString(), 
-        endTime: new Date().toISOString() 
-      };
+      clearInterval(timerInterval);
+      const payload = { taskName: document.getElementById('taskName').value || "Untitled", startTime: startTime.toISOString(), endTime: new Date().toISOString() };
       document.getElementById('mainBody').classList.remove('recording');
       document.getElementById('stopBtn').disabled = true;
       try {
@@ -270,63 +162,35 @@
         document.getElementById('timerDisplay').innerText = "00:00:00";
         document.getElementById('taskName').value = "";
         document.getElementById('startBtn').disabled = false;
-        initProgressBar(); // リセット
-        setTimeout(loadData, 1000); // データ再読み込み
+        initProgressBar();
+        setTimeout(loadData, 1500); 
       } catch (e) { console.error(e); }
     }
 
-    // データ読み込み（履歴＋週間レポート）
     function loadData() {
       fetch(gasUrl).then(res => res.json()).then(data => {
         if (!data) return;
-        renderHistory(data.history);
-        renderWeeklyReport(data.weekly);
-        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime}`;
-      }).catch(e => console.error("Data Load Error:", e));
+        renderHistory(data.history || []);
+        renderWeeklyReport(data.weekly || {});
+        document.getElementById('totalTime').innerText = `TOTAL: ${data.totalTime || "0h 0m"}`;
+      }).catch(e => console.error(e));
     }
 
     function renderHistory(history) {
-        const list = document.getElementById('historyList');
-        if (!history || history.length === 0) {
-            list.innerHTML = '<div style="color:var(--text-sub);font-size:0.8rem;">No recent logs.</div>';
-            return;
-        }
-        list.innerHTML = history.map(item => {
-          const active = Math.min(Math.floor(item.duration / 10), 36);
-          let m = '<div class="mini-bar">';
-          for(let i=0; i<36; i++) {
-            const cIdx = Math.min(Math.floor(i/6), 5);
-            m += `<div class="mini-dot" style="background-color: ${i < active ? COLORS[cIdx] : '#222'}"></div>`;
-          }
-          return `<div class="history-item"><div style="display:flex;justify-content:space-between;font-size:0.9rem;font-weight:bold;"><span>${item.title.toUpperCase()}</span><span>${item.duration}m</span></div>${m}</div>`;
-        }).join('');
+      document.getElementById('historyList').innerHTML = history.map(item => {
+        const active = Math.min(Math.floor(item.duration / 10), 36);
+        let m = '<div class="mini-bar">';
+        for(let i=0; i<36; i++) m += `<div class="mini-dot" style="background-color: ${i < active ? COLORS[Math.min(Math.floor(i/6), 5)] : '#222'}"></div>`;
+        return `<div class="history-item"><div style="display:flex;justify-content:space-between;font-size:0.9rem;"><span>${item.title.toUpperCase()}</span><span>${item.duration}m</span></div>${m}</div>`;
+      }).join('');
     }
 
-    // 週間レポート描画
     function renderWeeklyReport(weeklyData) {
-        const container = document.getElementById('weeklyReport');
-        if (!weeklyData) return;
-
-        // 最大値を見つけてバーの比率を計算（最大を100%とする）
-        const maxMin = Math.max(...Object.values(weeklyData), 1); // 0除算防止
-
-        container.innerHTML = WEEK_DAYS.map(day => {
-            const minutes = weeklyData[day] || 0;
-            const heightPercent = (minutes / maxMin) * 100;
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-
-            return `
-                <div class="day-column">
-                    <div class="day-label">${day}</div>
-                    <div class="day-bar-container">
-                        <div class="day-bar" style="height: ${heightPercent}%;"></div>
-                    </div>
-                    <div class="day-time">${timeStr}</div>
-                </div>
-            `;
-        }).join('');
+      const maxMin = Math.max(...Object.values(weeklyData), 1);
+      document.getElementById('weeklyReport').innerHTML = WEEK_DAYS.map(day => {
+        const mins = weeklyData[day] || 0;
+        return `<div class="day-column"><div class="day-label">${day}</div><div class="day-bar-container"><div class="day-bar" style="height: ${(mins/maxMin)*100}%;"></div></div><div class="day-time">${Math.floor(mins/60)}h ${mins%60}m</div></div>`;
+      }).join('');
     }
 
     initProgressBar();
